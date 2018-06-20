@@ -101,17 +101,9 @@ func showCursor() {
 	fmt.Print("\033[?25h")
 }
 
-func terminal() {
-	// disable input buffering
-	exec.Command("stty", "-F", "/dev/tty", "cbreak", "min", "1").Run()
-	// do not display entered characters on the screen
-	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
-	// restore the echoing state when exiting
-	defer exec.Command("stty", "-F", "/dev/tty", "echo").Run()
-
-	var b []byte = make([]byte, 1)
-	for {
-		os.Stdin.Read(b)
-		fmt.Println("I got the byte", b, "("+string(b)+")")
-	}
+func stty(commands ...string) (err error) {
+	args := []string{"-F", "/dev/tty"}
+	args = append(args, commands...)
+	cmd := exec.Command("stty", args...)
+	return cmd.Run()
 }
