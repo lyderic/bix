@@ -101,9 +101,8 @@ func showCursor() {
 	fmt.Print("\033[?25h")
 }
 
-func stty(commands ...string) (err error) {
-	args := []string{"-F", "/dev/tty"}
-	args = append(args, commands...)
+func stty(args ...string) (err error) {
 	cmd := exec.Command("stty", args...)
+	cmd.Stdin = os.Stdin
 	return cmd.Run()
 }
