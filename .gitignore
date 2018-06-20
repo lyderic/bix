@@ -13,3 +13,6 @@
 
 # binary (UNIX)
 bixru
+
+# vim swap
+*.swp
