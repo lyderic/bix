@@ -86,23 +86,3 @@ func cyan(message string) string {
 func magenta(message string) string {
 	return color(MAGENTA, message)
 }
-
-/*
-Hide terminal cursor
-*/
-func hideCursor() {
-	fmt.Print("\033[?25l")
-}
-
-/*
-Show terminal cursor
-*/
-func showCursor() {
-	fmt.Print("\033[?25h")
-}
-
-func stty(args ...string) (err error) {
-	cmd := exec.Command("stty", args...)
-	cmd.Stdin = os.Stdin
-	return cmd.Run()
-}

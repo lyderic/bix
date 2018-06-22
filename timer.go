@@ -9,28 +9,25 @@ import (
 
 func timer() (err error) {
 	fmt.Println("Timer - hit [SPACE] to stop")
-	if err = setTerminal(); err != nil {
+	/*
+	var terminal Terminal
+	if terminal, err = rawTerminal(); err != nil {
 		return
+	}
+	*/
+	var terminal Terminal
+	if err = terminal.raw(); err != nil {
+		  return
 	}
 	start := time.Now()
 	// the next two lines to prevent Ctrl-C to be pressed as it messes up the
 	// terminal
 	c := make(chan os.Signal)
-	//signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	signal.Notify(c, os.Interrupt)
 	loop()
 	fmt.Println("Your time is:", time.Now().Sub(start))
-	return restoreTerminal()
-}
-
-func setTerminal() (err error) {
-	hideCursor()
-	return stty("-icanon", "-echo", "min", "0", "time", "0")
-}
-
-func restoreTerminal() (err error) {
-	showCursor()
-	return stty("sane")
+	//return restoreTerminal(terminal)
+	return terminal.restore()
 }
 
 func loop() {
