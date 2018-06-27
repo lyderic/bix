@@ -82,14 +82,6 @@ func main() {
 				},
 			},
 		},
-		{
-			Name:    "parse64",
-			Usage:   "parse base64 encoded files of ruwix.com",
-			Aliases: []string{"64"},
-			Action: func(c *cli.Context) (err error) {
-				return parse64()
-			},
-		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		tools.PrintColorf(tools.RED, "[ERROR] %v\n", err)
