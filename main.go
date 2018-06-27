@@ -67,11 +67,32 @@ func main() {
 			},
 		},
 		{
+			Name:    "performance",
+			Usage:   "manage performances",
+			Aliases: []string{"perf", "p"},
+			Subcommands: cli.Commands{
+				cli.Command{
+					Name:  "add",
+					Usage: "add a performance",
+					Action: func(c *cli.Context) (err error) {
+						return addPerformance()
+					},
+				},
+				cli.Command{
+					Name:  "show",
+					Usage: "show performances",
+					Action: func(c *cli.Context) (err error) {
+						return showPerformances()
+					},
+				},
+			},
+		},
+		{
 			Name:    "parse64",
 			Usage:   "parse base64 encoded files of ruwix.com",
 			Aliases: []string{"64"},
 			Action: func(c *cli.Context) (err error) {
-				return  parse64()
+				return parse64()
 			},
 		},
 	}

@@ -10,14 +10,14 @@ import (
 func timer() (err error) {
 	fmt.Println("Timer - hit [SPACE] to stop")
 	/*
-	var terminal Terminal
-	if terminal, err = rawTerminal(); err != nil {
-		return
-	}
+		var terminal Terminal
+		if terminal, err = rawTerminal(); err != nil {
+			return
+		}
 	*/
 	var terminal Terminal
 	if err = terminal.raw(); err != nil {
-		  return
+		return
 	}
 	start := time.Now()
 	// the next two lines to prevent Ctrl-C to be pressed as it messes up the

@@ -5,18 +5,17 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
 	"time"
 )
 
 func parse64() (err error) {
-	var raw []byte
-	if raw, err = ioutil.ReadFile(s.ruwix64); err != nil {
-		return
+	//encoded := s.Ruwix64
+	encoded := ""
+	if len(encoded) == 0 {
+		return fmt.Errorf("no ruwix base64 data found")
 	}
-	encoded := string(raw)
 	var decoded []byte
 	if decoded, err = base64.StdEncoding.DecodeString(encoded); err != nil {
 		return
