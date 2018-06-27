@@ -14,7 +14,7 @@ type Performance struct {
 }
 
 func (p Performance) String() string {
-	return fmt.Sprintf("📅 %s ⏱  %s", p.Date.Format(TIMESTAMP_FORMAT), p.Chrono)
+	return fmt.Sprintf("▶ %s ◉ %s", p.Date.Format(TIMESTAMP_FORMAT), p.Chrono)
 }
 
 func addPerformance(appfile string) (err error) {
@@ -51,8 +51,8 @@ func input(prompt string) (text string, err error) {
 }
 
 func showPerformances() (err error) {
-	for _, p := range s.Performances {
-		fmt.Println(p)
+	for idx, p := range s.Performances {
+		fmt.Printf("%03d %s\n", idx+1, p)
 	}
 	return
 }

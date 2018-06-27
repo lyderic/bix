@@ -13,9 +13,9 @@ func init() {
 }
 
 func main() {
-	appfile := filepath.Join(os.Getenv("HOME"), ".bixru.json")
+	appfile := filepath.Join(os.Getenv("HOME"), ".bix.json")
 	app := cli.NewApp()
-	app.Name = "bixru"
+	app.Name = "bix"
 	app.Usage = "Rubik's Cube Timer for the Command Line"
 	app.Version = VERSION
 	app.Flags = []cli.Flag{
