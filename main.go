@@ -2,29 +2,18 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"os/user"
 	"path/filepath"
 
 	"github.com/lyderic/tools"
 	"github.com/urfave/cli"
 )
 
-var (
-	appfile string
-)
-
 func init() {
-	var err error
-	var me *user.User
-	if me, err = user.Current(); err != nil {
-		log.Fatal(err)
-	}
-	appfile = filepath.Join(me.HomeDir, ".bixru.json")
 }
 
 func main() {
+	appfile := filepath.Join(os.Getenv("HOME"), ".bixru.json")
 	app := cli.NewApp()
 	app.Name = "bixru"
 	app.Usage = "Rubik's Cube Timer for the Command Line"
@@ -75,13 +64,19 @@ func main() {
 					Name:  "add",
 					Usage: "add a performance",
 					Action: func(c *cli.Context) (err error) {
-						return addPerformance()
+						if err = setup(appfile); err != nil {
+							  return
+						}
+						return addPerformance(appfile)
 					},
 				},
 				cli.Command{
 					Name:  "show",
 					Usage: "show performances",
 					Action: func(c *cli.Context) (err error) {
+						if err = setup(appfile); err != nil {
+							  return
+						}
 						return showPerformances()
 					},
 				},

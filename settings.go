@@ -17,24 +17,23 @@ type Settings struct {
 
 var s Settings
 
-func init() {
-	var err error
+func setup(appfile string) (err error) {
 	if _, err = os.Stat(appfile); os.IsNotExist(err) {
 		fmt.Println("creating new application file:", appfile)
 		s.Created = time.Now()
 	} else {
-		if err = load(); err != nil {
+		if err = load(appfile); err != nil {
 			log.Fatal("failed to load application file:", err)
 		}
 	}
 	s.Accessed = time.Now()
-	if err = persist(); err != nil {
+	if err = persist(appfile); err != nil {
 		log.Fatal("failed to write application file:", err)
 	}
+	return
 }
 
-func load() (err error) {
-	fmt.Println("LOADING:", appfile)
+func load(appfile string) (err error) {
 	var buffer []byte
 	if buffer, err = ioutil.ReadFile(appfile); err != nil {
 		return
@@ -45,8 +44,7 @@ func load() (err error) {
 	return
 }
 
-func persist() (err error) {
-	fmt.Println("WRITING:", appfile)
+func persist(appfile string) (err error) {
 	var buffer []byte
 	if buffer, err = json.MarshalIndent(s, "", "  "); err != nil {
 		return

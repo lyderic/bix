@@ -17,7 +17,7 @@ func (p Performance) String() string {
 	return fmt.Sprintf("📅 %s ⏱  %s", p.Date.Format(TIMESTAMP_FORMAT), p.Chrono)
 }
 
-func addPerformance() (err error) {
+func addPerformance(appfile string) (err error) {
 	var p Performance
 	var dtext, ctext string
 	if dtext, err = input("Date (YYYYMMDD HHMMSS)? "); err != nil {
@@ -37,7 +37,7 @@ func addPerformance() (err error) {
 		return
 	}
 	s.Performances = append(s.Performances, p)
-	persist()
+	persist(appfile)
 	showPerformances()
 	return
 }
