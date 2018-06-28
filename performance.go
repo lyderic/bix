@@ -1,10 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strings"
 	"time"
 )
 
@@ -39,14 +36,6 @@ func addPerformance(appfile string) (err error) {
 	s.Performances = append(s.Performances, p)
 	persist(appfile)
 	showPerformances()
-	return
-}
-
-func input(prompt string) (text string, err error) {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print(prompt)
-	text, err = reader.ReadString('\n')
-	text = strings.TrimSpace(text)
 	return
 }
 

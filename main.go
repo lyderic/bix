@@ -65,7 +65,7 @@ func main() {
 					Usage: "add a performance",
 					Action: func(c *cli.Context) (err error) {
 						if err = setup(appfile); err != nil {
-							  return
+							return
 						}
 						return addPerformance(appfile)
 					},
@@ -75,7 +75,7 @@ func main() {
 					Usage: "show performances",
 					Action: func(c *cli.Context) (err error) {
 						if err = setup(appfile); err != nil {
-							  return
+							return
 						}
 						return showPerformances()
 					},

@@ -19,7 +19,13 @@ var s Settings
 
 func setup(appfile string) (err error) {
 	if _, err = os.Stat(appfile); os.IsNotExist(err) {
-		fmt.Println("creating new application file:", appfile)
+		var answer string
+		if answer, err = input(fmt.Sprintf("Create new application file (%s) [y/N]? ", appfile)); err != nil {
+			return
+		}
+		if len(answer) == 0 || answer[0] == 'n' || answer[0] == 'N' {
+			return fmt.Errorf("no application file: %s", appfile)
+		}
 		s.Created = time.Now()
 	} else {
 		if err = load(appfile); err != nil {

@@ -8,13 +8,7 @@ import (
 )
 
 func timer() (err error) {
-	fmt.Println("Timer - hit [SPACE] to stop")
-	/*
-		var terminal Terminal
-		if terminal, err = rawTerminal(); err != nil {
-			return
-		}
-	*/
+	fmt.Println("Timer - hit [SPACE] to toggle start/stop")
 	var terminal Terminal
 	if err = terminal.raw(); err != nil {
 		return
@@ -26,7 +20,6 @@ func timer() (err error) {
 	signal.Notify(c, os.Interrupt)
 	loop()
 	fmt.Println("Your time is:", time.Now().Sub(start))
-	//return restoreTerminal(terminal)
 	return terminal.restore()
 }
 
