@@ -11,7 +11,7 @@ type Terminal struct {
 	state string
 }
 
-func (terminal *Terminal) raw() (err error) {
+func (terminal *Terminal) init() (err error) {
 	fmt.Print("\033[?25l") // hide cursor
 	var buffer []byte
 	cmd := exec.Command("stty", "--save")
@@ -22,7 +22,11 @@ func (terminal *Terminal) raw() (err error) {
 	}
 	// the last character of output of stty --save is a '\n'!
 	terminal.state = string(buffer[:len(buffer)-1])
-	err = stty("-icanon", "-echo", "min", "0", "time", "0")
+	return
+}
+
+func (terminal *Terminal) raw(min string) (err error) {
+	err = stty("-icanon", "-echo", "min", min, "time", "0")
 	return
 }
 
