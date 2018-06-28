@@ -3,17 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/lyderic/tools"
 	"github.com/urfave/cli"
 )
 
-func init() {
-}
-
 func main() {
-	appfile := filepath.Join(os.Getenv("HOME"), ".bix.json")
+	appfile := "bix.json"
 	app := cli.NewApp()
 	app.Name = "bix"
 	app.Usage = "Rubik's Cube Timer for the Command Line"
