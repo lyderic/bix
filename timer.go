@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func timer() (err error) {
+func timer(appfile string) (err error) {
 	fmt.Println("Timer - hit [SPACE] to toggle start/stop")
 	fmt.Print("0m00s")
 	var terminal Terminal
@@ -23,10 +23,31 @@ func timer() (err error) {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt)
 	if err = loop(terminal); err != nil {
-		  return
+		return
 	}
-	fmt.Println("Your time is:", time.Now().Sub(start))
-	return terminal.restore()
+	var chrono time.Duration
+	chrono = time.Now().Sub(start)
+	fmt.Println("Your time is:", chrono)
+	if err = record(appfile, chrono); err != nil {
+		return
+	}
+	return
+}
+
+func record(appfile string, chrono time.Duration) (err error) {
+	var answer string
+	if answer, err = input("Record time [y/N]? "); err != nil {
+		return
+	}
+	if len(answer) == 0 || answer[0] == 'n' || answer[0] == 'N' {
+		fmt.Println("Time not recorded")
+		return
+	}
+	var p Performance
+	p.Date = time.Now()
+	p.Chrono = chrono
+	appendPerformance(appfile, p)
+	return
 }
 
 func spacePressed(terminal Terminal) (err error) {
@@ -58,5 +79,5 @@ func loop(terminal Terminal) (err error) {
 			break
 		}
 	}
-	return
+	return terminal.restore()
 }

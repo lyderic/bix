@@ -14,7 +14,7 @@ func (p Performance) String() string {
 	return fmt.Sprintf("▶ %s ◉ %s", p.Date.Format(TIMESTAMP_FORMAT), p.Chrono)
 }
 
-func addPerformance(appfile string) (err error) {
+func inputPerformance(appfile string) (err error) {
 	var p Performance
 	var dtext, ctext string
 	if dtext, err = input("Date (YYYYMMDD HHMMSS)? "); err != nil {
@@ -34,14 +34,26 @@ func addPerformance(appfile string) (err error) {
 		return
 	}
 	s.Performances = append(s.Performances, p)
-	persist(appfile)
+	if err = persist(appfile); err != nil {
+		  return
+	}
 	showPerformances()
 	return
 }
 
+func appendPerformance(appfile string, p Performance) (err error) {
+	s.Performances = append(s.Performances, p)
+	return persist(appfile)
+}
+
 func showPerformances() (err error) {
+	var total int64
+	var n int
 	for idx, p := range s.Performances {
-		fmt.Printf("%03d %s\n", idx+1, p)
+		n = idx + 1
+		total = total + int64(p.Chrono)
+		fmt.Printf("%03d %s\n", n, p)
 	}
+	fmt.Println("Average:", time.Duration(total/int64(n)))
 	return
 }

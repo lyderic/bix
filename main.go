@@ -44,7 +44,10 @@ func main() {
 			Usage:   "start timer",
 			Aliases: []string{"t"},
 			Action: func(c *cli.Context) (err error) {
-				return timer()
+				if err = setup(appfile); err != nil {
+					return
+				}
+				return timer(appfile)
 			},
 		},
 		{
@@ -67,7 +70,7 @@ func main() {
 						if err = setup(appfile); err != nil {
 							return
 						}
-						return addPerformance(appfile)
+						return inputPerformance(appfile)
 					},
 				},
 				cli.Command{
