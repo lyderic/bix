@@ -47,6 +47,16 @@ func appendPerformance(appfile string, p Performance) (err error) {
 }
 
 func showPerformances(limit int) (err error) {
+	var pb Performance // personal best
+	//initialising to insane value
+	if pb.Chrono, err = time.ParseDuration("24h"); err != nil {
+		  return
+	}
+	for _, p := range s.Performances {
+		if p.Chrono < pb.Chrono {
+			pb = p
+		}
+	}
 	ln := len(s.Performances)
 	if ln == 0 {
 		return fmt.Errorf("No performance recorded")
@@ -65,6 +75,7 @@ func showPerformances(limit int) (err error) {
 		//fmt.Printf("%03d %s\n", n, p)
 		fmt.Println(p)
 	}
-	fmt.Println("Average:", time.Duration(total/int64(n)))
+	fmt.Printf("Average last %d: %v\n", limit, time.Duration(total/int64(n)))
+	fmt.Println("Personal best", pb)
 	return
 }
