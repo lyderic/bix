@@ -47,38 +47,39 @@ func main() {
 			},
 		},
 		{
-			Name:    "scramble",
-			Usage:   "produce a scramble",
-			Aliases: []string{"s"},
+			Name:  "scramble",
+			Usage: "produce a scramble",
+			//Aliases: []string{"s"},
 			Action: func(c *cli.Context) (err error) {
 				return scramble()
 			},
 		},
 		{
-			Name:    "performance",
-			Usage:   "manage performances",
-			Aliases: []string{"perf", "p"},
-			Subcommands: cli.Commands{
-				cli.Command{
-					Name:  "add",
-					Usage: "add a performance",
-					Action: func(c *cli.Context) (err error) {
-						if err = setup(appfile); err != nil {
-							return
-						}
-						return inputPerformance(appfile)
-					},
+			Name:    "show",
+			Usage:   "show recorded times",
+			Aliases: []string{"s"},
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name:  "all, a",
+					Usage: "show all",
 				},
-				cli.Command{
-					Name:  "show",
-					Usage: "show performances",
-					Action: func(c *cli.Context) (err error) {
-						if err = setup(appfile); err != nil {
-							return
-						}
-						return showPerformances()
-					},
-				},
+			},
+			Action: func(c *cli.Context) (err error) {
+				if err = setup(appfile); err != nil {
+					return
+				}
+				return showPerformances(10)
+			},
+		},
+		{
+			Name:    "manual",
+			Usage:   "manually add a performance",
+			Aliases: []string{"m"},
+			Action: func(c *cli.Context) (err error) {
+				if err = setup(appfile); err != nil {
+					return
+				}
+				return inputPerformance(appfile)
 			},
 		},
 	}

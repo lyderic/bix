@@ -75,7 +75,7 @@ func record(appfile string) (err error) {
 	p.Date = time.Now()
 	p.Chrono = chrono
 	appendPerformance(appfile, p)
-	showPerformances()
+	showPerformances(10)
 	return
 }
 

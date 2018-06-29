@@ -37,7 +37,7 @@ func inputPerformance(appfile string) (err error) {
 	if err = persist(appfile); err != nil {
 		return
 	}
-	showPerformances()
+	showPerformances(10)
 	return
 }
 
@@ -46,13 +46,24 @@ func appendPerformance(appfile string, p Performance) (err error) {
 	return persist(appfile)
 }
 
-func showPerformances() (err error) {
+func showPerformances(limit int) (err error) {
+	ln := len(s.Performances)
+	if ln == 0 {
+		return fmt.Errorf("No performance recorded")
+	}
+	if limit == 0 {
+		limit = ln
+	}
+	if limit > ln {
+		limit = ln
+	}
 	var total int64
 	var n int
-	for idx, p := range s.Performances {
+	for idx, p := range s.Performances[ln-limit:] {
 		n = idx + 1
 		total = total + int64(p.Chrono)
-		fmt.Printf("%03d %s\n", n, p)
+		//fmt.Printf("%03d %s\n", n, p)
+		fmt.Println(p)
 	}
 	fmt.Println("Average:", time.Duration(total/int64(n)))
 	return
