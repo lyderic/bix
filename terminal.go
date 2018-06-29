@@ -12,7 +12,6 @@ type Terminal struct {
 }
 
 func (terminal *Terminal) init() (err error) {
-	fmt.Print("\033[?25l") // hide cursor
 	var buffer []byte
 	cmd := exec.Command("stty", "--save")
 	cmd.Stdin = os.Stdin
@@ -25,8 +24,9 @@ func (terminal *Terminal) init() (err error) {
 	return
 }
 
-func (terminal *Terminal) raw(min string) (err error) {
-	err = stty("-icanon", "-echo", "min", min, "time", "0")
+func (terminal *Terminal) raw(min, intr string) (err error) {
+	fmt.Print("\033[?25l") // hide cursor
+	err = stty("intr", intr, "-icanon", "-echo", "min", min, "time", "0")
 	return
 }
 

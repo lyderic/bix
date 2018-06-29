@@ -35,7 +35,7 @@ func inputPerformance(appfile string) (err error) {
 	}
 	s.Performances = append(s.Performances, p)
 	if err = persist(appfile); err != nil {
-		  return
+		return
 	}
 	showPerformances()
 	return

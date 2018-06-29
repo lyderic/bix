@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
 	"time"
 )
+
+var chrono time.Duration
 
 func timer(appfile string) (err error) {
 	fmt.Println("Timer - hit [SPACE] to toggle start/stop")
@@ -14,27 +17,52 @@ func timer(appfile string) (err error) {
 	if err = terminal.init(); err != nil {
 		return
 	}
+	var ctx context.Context
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithCancel(context.Background())
+	done := make(chan struct{})
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go stop(terminal, c, cancel)
 	if err = spacePressed(terminal); err != nil {
 		return
 	}
-	start := time.Now()
-	// the next two lines to prevent Ctrl-C to be pressed as it messes up the
-	// terminal
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt)
-	if err = loop(terminal); err != nil {
-		return
-	}
-	var chrono time.Duration
-	chrono = time.Now().Sub(start)
+	go loop(terminal, ctx, done)
+	<-done
 	fmt.Println("Your time is:", chrono)
-	if err = record(appfile, chrono); err != nil {
-		return
+	return record(appfile)
+}
+
+func stop(terminal Terminal, c chan os.Signal, cancel context.CancelFunc) (err error) {
+	select {
+	case <-c:
+		if err = terminal.restore(); err != nil {
+			return
+		}
+		cancel()
 	}
 	return
 }
 
-func record(appfile string, chrono time.Duration) (err error) {
+func loop(terminal Terminal, ctx context.Context, done chan struct{}) (err error) {
+	if err = terminal.raw("0", " "); err != nil {
+		return
+	}
+	start := time.Now()
+	for {
+		time.Sleep(time.Duration(750000) * (time.Nanosecond))
+		chrono = time.Now().Sub(start)
+		select {
+		case <-ctx.Done():
+			done <- struct{}{}
+		default:
+			fmt.Printf("\r%v\r", chrono)
+		}
+	}
+	return
+}
+
+func record(appfile string) (err error) {
 	var answer string
 	if answer, err = input("Record time [y/N]? "); err != nil {
 		return
@@ -52,33 +80,16 @@ func record(appfile string, chrono time.Duration) (err error) {
 }
 
 func spacePressed(terminal Terminal) (err error) {
-	if err = terminal.raw("1"); err != nil {
+	if err = terminal.raw("1", ""); err != nil {
 		return
 	}
 	var b []byte = make([]byte, 1)
 	os.Stdin.Read(b)
 	if b[0] != 32 {
-		return fmt.Errorf("Please press [SPACE] to start the timer!")
-	}
-	return
-}
-
-func loop(terminal Terminal) (err error) {
-	if err = terminal.raw("0"); err != nil {
-		return
-	}
-	start := time.Now()
-	var b []byte = make([]byte, 1)
-	for {
-		time.Sleep(time.Duration(500000) * time.Nanosecond)
-		fmt.Printf("\r%s\r", time.Now().Sub(start))
-		os.Stdin.Read(b)
-		if b[0] == 10 { // enter
-			continue
-		}
-		if b[0] == 32 { // space
-			break
-		}
+			if err = terminal.restore(); err != nil {
+				  return
+			}
+			return fmt.Errorf("\rPlease press [SPACE] to start the timer!")
 	}
 	return terminal.restore()
 }
